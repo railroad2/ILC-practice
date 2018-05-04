@@ -1,0 +1,206 @@
+\documentclass[11pt]{article}
+\usepackage[scale=0.75, twoside, bindingoffset=5mm, a4paper]{geometry}
+\usepackage[onehalfspacing]{setspace}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{xcolor}
+
+\title{ILC practice}
+\author{Kyungmin Lee}
+\date{April 2018}
+
+\begin{document}
+
+\maketitle
+
+\section{Finding $c_{\nu}$'s}
+
+\begin{equation}
+    \mathbf{\hat{m}}_{\text{CMB}} \equiv \sum_{\nu} c_{\nu}\mathbf{m^{\nu}}
+\end{equation}
+with a constraint
+\begin{equation}
+    \sum_{\nu} c_{\nu} = 1
+\end{equation}
+to keep the CMB amplitude consistent with blackbody emission.
+
+We ensure that the coefficients $c_\nu$ reduce foregrounds by imposing Gaussian priors \textcolor{red}{(I don't understand)}.
+
+\begin{equation}
+    \sum_{\nu} c_{\nu} g(\nu) \left( \frac{\nu}{\nu_\text{S/D}} \right)^{\beta_{\text{S/D}}} = 0 \pm 0.01
+\end{equation}
+corresponding to priors on $\Delta \beta_{\text{S/D}} < 0.1$. 
+
+Excluding the poorly understood part, I will use equation (1) and (2) to separate the foregrounds. It can be solved analytically \textcolor{red}{(Just my guess)}.
+
+A map $\mathbf{\hat{m}}$ at an certain frequency $\nu$ is a linear combination of CMB, foregrounds and noise. 
+
+\begin{equation}
+    \mathbf{m}^{\nu} = g(\nu)\left(\frac{\nu}{\nu_{\text{S}}}\right)^{\beta_\text{S}}\mathbf{m}_\text{sync} + 
+    g(\nu)\left(\frac{\nu}{\nu_{\text{D}}}\right)^{\beta_\text{D}}\mathbf{m}_\text{dust} +
+    \mathbf{m}_\text{CMB} +
+    \mathbf{n}^\nu
+\end{equation}
+
+With this expression, the equation (1) can be written as
+
+\begin{align}
+    \mathbf{\hat{m}}_{\text{CMB}} &= \sum_\nu \left[
+    c_\nu g(\nu)\left(\frac{\nu}{\nu_{\text{S}}}\right)^{\beta_\text{S}}\mathbf{m}_\text{sync} +
+    c_\nu g(\nu)\left(\frac{\nu}{\nu_{\text{D}}}\right)^{\beta_\text{D}}\mathbf{m}_\text{dust} +
+    c_\nu \mathbf{m}_{\text{CMB}} +
+    c_\nu \mathbf{\hat{n}}
+    \right] \\
+    &= \mathbf{m}_{\text{CMB}}+
+    c_\nu \mathbf{\hat{n}}+
+    \sum_\nu
+    \left[
+    c_\nu g(\nu)\left(\frac{\nu}{\nu_{\text{S}}}\right)^{\beta_\text{S}}\mathbf{m}_\text{sync} +
+    c_\nu g(\nu)\left(\frac{\nu}{\nu_{\text{D}}}\right)^{\beta_\text{D}}\mathbf{m}_\text{dust} 
+    \right] \\
+    &= \mathbf{m}_{\text{CMB}}+
+    c_\nu \mathbf{\hat{n}}+
+    \sum_\nu
+    \left[
+    c_\nu \mathbf{m}_\text{sync}^\nu +
+    c_\nu \mathbf{m}_\text{dust}^\nu 
+    \right]
+\end{align}
+where $\mathbf{m}_{\text{sync/dust}}^{\nu}=g(\nu)[\nu/\nu_{\text{S/D}}]^{\beta_{\text{S/D}}}\mathbf{m}_{\text{sync/dust}}$
+
+The main purpose for this step is making the coefficients of foreground maps to be 0.
+
+\begin{equation}
+    \sum_\nu \left[
+    c_\nu \mathbf{m}_\text{sync}^\nu +
+    c_\nu \mathbf{m}_\text{dust}^\nu 
+    \right]=0.
+\end{equation}
+
+For a real world, we only have combined maps. Therefore, let's check minimization with the combined maps. 
+
+\section{A simple test}
+
+For a simplest case, let's average the maps to. Then a map is represented with a single value. Let's see how the minimizer find the coefficients.
+
+I am using WMAP maps simulated Mark. The frequency bands are K, Ka, Q, V and W corresponding to 22, 30, 40, 60 and 90 GHz respectively.
+
+I got them from 'enviar' which is a server in IAC. 
+They have full-sky IQU maps with Nside=512. 
+
+Procedure
+
+1. read five maps
+
+2. read the mask map and apply the mask to the maps
+
+3. \textcolor{red}{(to be continued...)}
+
+\section{Variance minimization}
+
+\section{WMAP data test}
+
+\section{Toy model}
+
+I decided to verify my ILC code, as other associated people want, using a set of toy maps. They are constructed from maps for CMB and foregrounds at a certain frequency. I assume that the foregrounds consists of only one component and depends on the frequency with a single relation.
+Then, the frequency map can be constructed as
+\begin{equation}
+    \mathbf{m}^{\nu} = \mathbf{m}_{\text{CMB}} + f(\nu) \mathbf{m}_{\text{FG}}
+\end{equation}
+where $f(\nu)$ describes the dependence of the foreground on the frequency $\nu$. The 'templates' for CMB and Foregrounds (FG), $\textbf{m}_\text{CMB}$ and $\textbf{m}_\text{FG}$, are assumed that they are invariant over the frequency. 
+
+From the set of frequency maps, we would like to find the estimate of CMB map, $\hat{\textbf{m}} _\text{CMB}$ by linear combination of the frequency maps as described in previous sections.
+\begin{equation}
+\begin{split}
+    \hat{\textbf{m}}_\text{CMB} &= \sum_\nu c_\nu \textbf{m}^{\nu} \\
+    &= \sum_\nu c_\nu \left[\mathbf{m}_{\text{CMB}} + f(\nu) \mathbf{m}_{\text{FG}} \right] \\
+    &= \textbf{m}_\text{CMB} + \sum_\nu c_\nu f(\nu) \textbf{m}_\text{FG}
+\end{split}
+\end{equation}
+with a constraint that the sum of all coefficients should be unity,
+\begin{equation}\label{cons1}
+    \sum_\nu c_\nu = 1.
+\end{equation}
+And we can find the $c_\nu$ by minimizing the variance of the linear combination over all pixels of the maps, 
+\begin{equation}
+\begin{split}
+    \text{Var}\left[\textbf{m}_\text{CMB} + \sum_\nu f(\nu) \textbf{m}_\text{FG} \right] &= \text{Var}[\textbf{m}_\text{CMB}] + \text{Var}\left[ \sum_\nu c_\nu f(\nu) \textbf{m}_\text{FG} \right] \\
+    &= \text{Var}[\textbf{m}_\text{CMB}] + \text{Var}\left[\textbf{m}_\text{FG} \right]\left[\sum_\nu c_\nu f(\nu) \right]^2.
+\end{split}
+\end{equation}
+The second equality can be obtained according to another assumption that the frequency dependence term $f(\nu)$ is invariant over the pixels.
+Since the variances of the 'template' maps are invariant over the frequency, the problem is simplified to a minimization of the factor, 
+\begin{equation}\label{mineq}
+    \left[ \sum_\nu c_\nu f(\nu) \right] ^2 .
+\end{equation}
+
+\subsection{Analytic solution ?}
+Q: Can we analytically determine the coefficients $c_\nu$ for a given $F(\nu)$?
+
+Let's assume that we have 5 frequency maps at different frequencies $\nu_i$. 
+To minimize the equation (\ref{mineq}), we need to differentiate it by $c_{\nu_i}$ which gives
+\begin{equation}
+    \frac{\partial}{\partial c_{\nu_i}} \left[ \sum_{\nu_i} c_{\nu_i} f(\nu_i) \right]^2 = 2f(\nu_i)\left[ \sum_{\nu_i} c_{\nu_i} f(\nu_i) \right] = 0, 
+\end{equation}
+and makes it to be zero. When the derivatives for all $c_{\nu_i}$'s are vanished, the function will be minimized. 
+
+We have a constraint expressed as the eq. \ref{cons1}. The constraints can be accounted with the Lagrangian multipliers and the equation to be minimized becomes
+
+\begin{equation}\label{mineq2}
+    \left[ \sum_\nu c_\nu f(\nu) \right] ^2 + \lambda \left( 1-\sum_\nu c_\nu  \right),
+\end{equation}
+
+and its derivative is
+
+\begin{equation}
+     2f(\nu_i)\left[ \sum_{\nu_i} c_{\nu_i} f(\nu_i) \right] - \lambda = 0.  
+\end{equation}
+
+With all the derivatives w.r.t. all $c_{\nu_i}$ gives a matrix equation seems like following.
+
+\begin{equation}
+    \mathbf{F} \mathbf{c_\nu} = \frac{1}{2} \lambda
+\end{equation}
+
+\begin{equation}
+    \left(
+    \begin{matrix}
+        f(\nu_1)f(\nu_1) & f(\nu_1)f(\nu_2) & \cdots & f(\nu_1)f(\nu_5) \\
+        f(\nu_2)f(\nu_1) & f(\nu_2)f(\nu_2) & \cdots & f(\nu_2)f(\nu_5) \\
+        \vdots & \vdots & \ddots & \vdots &  \\
+        f(\nu_5)f(\nu_1) & f(\nu_5)f(\nu_2) & \cdots & f(\nu_5)f(\nu_5) \\
+    \end{matrix}
+    \right)
+    \left(
+    \begin{matrix}
+    c_{\nu_1} \\ c_{\nu_2} \\ \vdots \\ c_{\nu_5}
+    \end{matrix}
+    \right) =
+    \frac{1}{2}
+    \left(
+    \begin{matrix}
+        \lambda \\ \lambda \\ \vdots \\ \lambda 
+    \end{matrix}
+    \right)
+\end{equation}
+The $\mathbf{F}$ matrix can be obtained by the outer product of a vector $\mathbf{f}=(f(\nu_1)~f(\nu_2)~\cdots~f(\nu_5))$, 
+
+\begin{equation}
+    \mathbf{F} = \mathbf{f}^T \otimes \mathbf{f}.
+\end{equation}
+
+By solving this matrix equation with a simple constraint, we can get the coefficients $c_{\nu_i}$'s. HOWEVER, the matrix generated by the outer product of a vector with itself is always singular!! \textcolor{red}{(Although it is not yet proved, but tested with some small matrix cases (2$\times$2 and 3$\times$3.))} Therefore the matrix $\mathbf{F}$ cannot be inverted.
+In this step we have two ways. Matrix regularization and pseudo-inverse.
+
+By adding some small numbers to the diagonal terms, the matrix can be regularized although the determinant is still very small. 
+Another way is just using the pseudo-inverse. The numpy.linalg and any other linear algebra packages have the pseudo-inverse function using Singular Value Decomposition (SVD).
+
+But the solution from the pseudo-inverse looks not so good. I compared the results with the regularization,  pseudo-inverse and the case both are applied. 
+
+I found another fancy way to do that. I added the same values for every components and used pseudo-inverse. The result is very good and the $\lambda$ is the value times 2 (may be due to the 1/2 in front of the $\lambda$ vector.). In some cases the result is much better than the coefficients from optimization. So interesting and exciting. 
+
+\textcolor{red}{
+I have to solve the SVD with the offset and prove it mathematically.}
+
+
+\end{document}
